@@ -226,6 +226,8 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
             // because the catalog bytes does not contain any deployments but only schema related contents
             // the command log reply needs it to generate a correct catalog diff
             DeploymentType dt  = CatalogUtil.parseDeploymentFromString(deploymentString);
+            System.out.println("I think now it is a critical moment, see stack trace");
+            Thread.dumpStack();
             if (dt == null) {
                 retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
                 return retval;
@@ -471,6 +473,8 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
                                                                   final boolean isPromotion,
                                                                   final boolean useAdhocDDL)
     {
+    	System.out.println("We are in the UACBase .updateApp()");
+
         ZooKeeper zk = VoltDB.instance().getHostMessenger().getZK();
         CatalogChangeResult ccr = null;
 

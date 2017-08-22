@@ -861,6 +861,8 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
             }
 
             ReadDeploymentResults readDepl = readPrimedDeployment(config);
+            System.out.println("sph is: " + readDepl.deployment.getCluster().getSitesperhost());
+            System.out.println("[LINE 864] The start action is: " + config.m_startAction + " , after readPrimedDeployment");
 
             if (config.m_startAction == StartAction.INITIALIZE) {
                 if (config.m_forceVoltdbCreate && m_nodeSettings.clean()) {
@@ -929,6 +931,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
             if (config.m_hostCount == VoltDB.UNDEFINED) {
                 config.m_hostCount = readDepl.deployment.getCluster().getHostcount();
             }
+            System.out.println("At this moment, sph is: " + config.m_sitesperhost);
 
             // set the mode first thing
             m_mode = OperationMode.INITIALIZING;
@@ -1008,7 +1011,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
 
             ClusterSettings clusterSettings = ClusterSettings.create(
                     fromCommandLine, fromPropertyFile.asMap(), fromDeploymentFile);
-
+            System.out.println("[Line 1012: create and set cluster settings from property file - NO PROBLEM]");
             // persist the merged settings
             clusterSettings.store();
 
@@ -1026,7 +1029,10 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
                 }
                 hostLog.info(action);
                 consoleLog.info(action);
+                System.out.println(action);
             }
+
+            System.out.println("[Line 1031: ], about start action type");
 
             m_config.m_startAction = determination.startAction;
             m_config.m_hostCount = determination.hostCount;
@@ -1075,6 +1081,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
             // wait to make sure every host actually *see* each other's ZK node state.
             final int numberOfNodes = m_messenger.getLiveHostIds().size();
             Map<Integer, HostInfo> hostInfos = m_messenger.waitForGroupJoin(numberOfNodes);
+            System.out.println("[Line 1080: At this moment we get the host info including sph]");
             Map<Integer, String> hostGroups = Maps.newHashMap();
             Map<Integer, Integer> sitesPerHostMap = Maps.newHashMap();
             hostInfos.forEach((k, v) -> {
@@ -1196,6 +1203,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
                     partitionGroupPeers = topo.getPartitionGroupPeers(m_messenger.getHostId());
                 }
                 m_messenger.setPartitionGroupPeers(partitionGroupPeers, m_clusterSettings.get().hostcount());
+                System.out.println("[Line 1202: we know the partition size from topo]");
                 for (int ii = 0; ii < partitions.size(); ii++) {
                     Integer partition = partitions.get(ii);
                     m_iv2InitiatorStartingTxnIds.put( partition, TxnEgo.makeZero(partition).getTxnId());
@@ -1321,6 +1329,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
             else {
                 consoleLog.l7dlog(Level.INFO, LogKeys.host_VoltDB_StayTunedForNoLogging.name(), null);
             }
+            System.out.println("[Line 1326] command log init");
             if (m_commandLog != null && (m_rejoining || m_joining)) {
                 //On rejoin the starting IDs are all 0 so technically it will load any snapshot
                 //but the newest snapshot will always be the truncation snapshot taken after rejoin
@@ -2503,6 +2512,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
         /*
          * Debate with the cluster what the deployment file should be
          */
+    	System.out.println("We are in RealVoltDB -> readPrimedDeployment");
         try {
             byte deploymentBytes[] = null;
 
