@@ -2461,6 +2461,7 @@ public class RealVoltDB implements VoltDBInterface, RestoreAgent.Callback, HostM
             cluster.getDatabases().add("database");
 
             String result = CatalogUtil.compileDeployment(catalog, deployment, true);
+            System.out.println("[Line 2464: at this moment catalog is empty, while deployment]");
             if (result != null) {
                 // Any other non-enterprise deployment errors will be caught and handled here
                 // (such as <= 0 host count)

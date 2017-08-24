@@ -105,6 +105,11 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
         try {
             // catalog change specific boiler plate
             CatalogContext context = VoltDB.instance().getCatalogContext();
+            System.out.println(context.getDeployment().getCluster().getSitesperhost());
+            System.out.println(CatalogUtil.parseDeploymentFromString(operationString).getCluster().getSitesperhost());
+            if (context.getDeployment().getCluster().getSitesperhost() != CatalogUtil.parseDeploymentFromString(operationString).getCluster().getSitesperhost()) {
+            	throw new Exception("You are trying to change the site per host.");
+            }
             // Start by assuming we're doing an @UpdateApplicationCatalog.  If-ladder below
             // will complete with newCatalogBytes actually containing the bytes of the
             // catalog to be applied, and deploymentString will contain an actual deployment string,
