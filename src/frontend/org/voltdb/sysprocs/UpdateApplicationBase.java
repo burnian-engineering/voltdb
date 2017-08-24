@@ -229,7 +229,6 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
             // because the catalog bytes does not contain any deployments but only schema related contents
             // the command log reply needs it to generate a correct catalog diff
             DeploymentType dt  = CatalogUtil.parseDeploymentFromString(deploymentString);
-            Thread.dumpStack();
             if (dt == null) {
                 retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
                 return retval;
