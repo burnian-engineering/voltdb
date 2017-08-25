@@ -105,8 +105,14 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
         try {
             // catalog change specific boiler plate
             CatalogContext context = VoltDB.instance().getCatalogContext();
-            if (context.getDeployment().getCluster().getSitesperhost() != CatalogUtil.parseDeploymentFromString(operationString).getCluster().getSitesperhost()) {
-            	throw new Exception("You are trying to change the site per host.");
+            DeploymentType dt = CatalogUtil.parseDeploymentFromString(operationString);
+            if (dt == null) {
+            	retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
+            	return retval;
+            }
+            if (context.getDeployment().getCluster().getSitesperhost() != dt.getCluster().getSitesperhost()) {
+            	retval.errorMsg = "Unable to update deployment configuration: the site per host cannot be changed";
+            	return retval;
             }
             // Start by assuming we're doing an @UpdateApplicationCatalog.  If-ladder below
             // will complete with newCatalogBytes actually containing the bytes of the
@@ -120,7 +126,8 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
                 // Grab the current catalog bytes if @UAC had a null catalog from deployment-only update
                 if ((operationBytes == null) || (operationBytes.length == 0)) {
                     newCatalogJar = oldJar;
-                } else {
+                }
+                else {
                     newCatalogJar = CatalogUtil.loadInMemoryJarFile(operationBytes);
                 }
                 // If the deploymentString is null, we'll fill it in with current deployment later
@@ -228,7 +235,7 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
             // this is necessary, even for @UpdateClasses that does not change deployment
             // because the catalog bytes does not contain any deployments but only schema related contents
             // the command log reply needs it to generate a correct catalog diff
-            DeploymentType dt  = CatalogUtil.parseDeploymentFromString(deploymentString);
+            dt  = CatalogUtil.parseDeploymentFromString(deploymentString);
             if (dt == null) {
                 retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
                 return retval;
