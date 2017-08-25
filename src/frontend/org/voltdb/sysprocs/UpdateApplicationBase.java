@@ -107,12 +107,12 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
             CatalogContext context = VoltDB.instance().getCatalogContext();
             DeploymentType dt = CatalogUtil.parseDeploymentFromString(operationString);
             if (dt == null) {
-            	retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
-            	return retval;
+                retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
+                return retval;
             }
             if (context.getDeployment().getCluster().getSitesperhost() != dt.getCluster().getSitesperhost()) {
-            	retval.errorMsg = "Unable to update deployment configuration: the site per host cannot be changed";
-            	return retval;
+                retval.errorMsg = "Unable to update deployment configuration: the site per host cannot be changed";
+                return retval;
             }
             // Start by assuming we're doing an @UpdateApplicationCatalog.  If-ladder below
             // will complete with newCatalogBytes actually containing the bytes of the
