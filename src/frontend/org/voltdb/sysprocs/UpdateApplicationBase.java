@@ -110,8 +110,9 @@ public abstract class UpdateApplicationBase extends VoltNTSystemProcedure {
                 retval.errorMsg = "Unable to update deployment configuration: Error parsing deployment string";
                 return retval;
             }
+            // Since sitesPerHost is no longer part of catalog, check it here before diff engine
             if (context.getDeployment().getCluster().getSitesperhost() != dt.getCluster().getSitesperhost()) {
-                retval.errorMsg = "Unable to update deployment configuration: the site per host cannot be changed";
+                retval.errorMsg = "Unable to update deployment configuration: sites per host cannot be changed";
                 return retval;
             }
             // Start by assuming we're doing an @UpdateApplicationCatalog.  If-ladder below
